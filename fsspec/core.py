@@ -632,6 +632,7 @@ def get_fs_token_paths(
         inkwargs["target_options"] = dict(**kw, **inkwargs)
         inkwargs["target_protocol"] = nested_protocol
         inkwargs["fo"] = urls
+        inkwargs["cache_type"] = "none"
     paths, protocol, _ = chain[0]
     fs = filesystem(protocol, **inkwargs)
     if isinstance(urlpath, (list, tuple, set)):
