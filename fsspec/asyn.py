@@ -272,6 +272,7 @@ async def _run_coros_in_chunks(
 
 
 # these methods should be implemented as async by any async-able backend
+# NOTE: these are all declared on the AsyncFileSystem class and throw NotImplemented errors
 async_methods = [
     "_ls",
     "_cat_file",
@@ -280,19 +281,33 @@ async_methods = [
     "_rm_file",
     "_cp_file",
     "_pipe_file",
-    "_expand_path",
+    "_expand_path", # TODO: can use AbstractFS
     "_info",
-    "_isfile",
+    "_isfile", # TODO: can use AbstractFS
     "_isdir",
     "_exists",
-    "_walk",
-    "_glob",
-    "_find",
-    "_du",
-    "_size",
+    "_walk",  # TODO: can use AbstractFS
+    "_glob",  # TODO: can use AbstractFS
+    "_find",  # TODO: can use AbstractFS
+    "_du",  # TODO: can use AbstractFS
+    "_size", # TODO: can use AbstractFS
     "_mkdir",
     "_makedirs",
 ]
+
+# other_async_methods = [
+#     "_cat",  # TODO: can use AbstractFS
+#     "_cat_ranges", # TODO: can use AbstractFS
+#     "_copy", # TODO: can use AbstractFS
+#     "_get", # TODO: can use AbstractFS
+#     "_pipe", # TODO: can use AbstractFS
+#     "_put", # TODO: can use AbstractFS
+#     "_rm",
+#     "_sizes", # TODO: can use AbstractFS
+# ]
+
+
+
 
 
 class AsyncFileSystem(AbstractFileSystem):
@@ -934,6 +949,9 @@ def mirror_sync_methods(obj):
             unsync = getattr(getattr(obj, smethod, False), "__func__", None)
             is_default = unsync is getattr(AbstractFileSystem, smethod, "")
             if isco and is_default:
+                print(f"[ ASYNC METHOD NAME ]: {method}")
+                print(f"[ SYNC METHOD NAME ]: {smethod}")
+                print(f"[ UNSYNC ]: {getattr(obj, smethod, False)} inner and outer {getattr(getattr(obj, smethod, False), '__func__', None)}")
                 mth = sync_wrapper(getattr(obj, method), obj=obj)
                 setattr(obj, smethod, mth)
                 if not mth.__doc__:
